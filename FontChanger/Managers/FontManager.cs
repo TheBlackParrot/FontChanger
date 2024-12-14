@@ -27,7 +27,7 @@ namespace FontChanger.Managers
             var settings = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF").creationSettings;
             Enum.TryParse(settings.renderMode.ToString(), out GlyphRenderMode renderMode);
             
-            Font = TMP_FontAsset.CreateFontAsset(fnt, settings.pointSize, settings.padding, renderMode, settings.atlasWidth, settings.atlasHeight);
+            Font = TMP_FontAsset.CreateFontAsset(fnt, (int)Math.Round(settings.pointSize/1.5), settings.padding, renderMode, settings.atlasWidth, settings.atlasHeight);
             Font.SetName(Path.GetFileNameWithoutExtension(path) + (curved ? "-Curved" : "-Standard"));
 
             Material matCopy;
