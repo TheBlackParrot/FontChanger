@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using BeatSaberMarkupLanguage;
 using IPA.Utilities;
+using ModestTree;
 using TMPro;
 using UnityEngine.TextCore.LowLevel;
 
@@ -14,8 +15,8 @@ namespace FontChanger.Managers
     {
         public static GameObject Prefab;
         private static TMP_FontAsset Font;
-        public static List<TMP_FontAsset> Fonts;
-        public static List<TMP_FontAsset> StandardFonts;
+        public static List<TMP_FontAsset> Fonts = new List<TMP_FontAsset>();
+        public static List<TMP_FontAsset> StandardFonts = new List<TMP_FontAsset>();
         private static Material _cachedCurvedMaterial;
         private static Material _cachedStandardMaterial;
 
@@ -51,26 +52,18 @@ namespace FontChanger.Managers
             _cachedCurvedMaterial = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(mat => mat.name.Contains("Teko-Medium SDF Curved"));
             _cachedStandardMaterial = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(mat =>
                 mat.name.Contains("Teko-Medium SDF") && !mat.name.Contains("Curved"));
-            
-            List<TMP_FontAsset> fonts = new List<TMP_FontAsset>();
-            List<TMP_FontAsset> standardFonts = new List<TMP_FontAsset>();
 
-            string[] files = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath,"FontChanger","Fonts"));
-            List<string> TTFs = new List<string>();
-            foreach (var file in files)
+            string[] files = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath, "FontChanger", "Fonts"));
+            foreach (string file in files)
             {
                 if (file.EndsWith(".ttf") || file.EndsWith(".otf"))
                 {
-                    TTFs.Add(file);
+                    Log.Info("Adding font " + Path.GetFileName(file));
+                    
+                    Fonts.Add(LoadFromTTF(file));
+                    StandardFonts.Add(LoadFromTTF(file, false));
                 }
             }
-            foreach (var ttf in TTFs)
-            {
-                fonts.Add(LoadFromTTF(ttf));
-                standardFonts.Add(LoadFromTTF(ttf, false));
-            }
-            Fonts = fonts;
-            StandardFonts = standardFonts;
 
             Plugin.Log.Info("Font loading complete");
         }
