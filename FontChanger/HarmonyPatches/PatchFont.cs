@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FontChanger.Configuration;
 using HarmonyLib;
@@ -8,9 +9,10 @@ using TMPro;
 namespace FontChanger.HarmonyPatches
 {
     [HarmonyPatch(typeof(CurvedTextMeshPro), "OnEnable")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal class FontPatch
     {
-        internal static readonly PluginConfig _config = PluginConfig.Instance;
+        private static readonly PluginConfig Config = PluginConfig.Instance;
         
         internal static void Prefix(CurvedTextMeshPro __instance)
         {
@@ -27,18 +29,19 @@ namespace FontChanger.HarmonyPatches
             int normalFlag = (int)FontStyles.Normal;
             int uppercaseFlag = (int)FontStyles.UpperCase;
             
-            __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(_config.FontName));
-            __instance.fontStyle = (FontStyles)((_config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
-            __instance.fontSize *= _config.FontSizeMultiplier;
-            __instance.characterSpacing = _config.CharSpacing;
-            __instance.wordSpacing = _config.WordSpacingAdjustment;
+            __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
+            __instance.fontStyle = (FontStyles)((Config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
+            __instance.fontSize *= Config.FontSizeMultiplier;
+            __instance.characterSpacing = Config.CharSpacing;
+            __instance.wordSpacing = Config.WordSpacingAdjustment;
         }
     }
     
     [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal class FontPatchTMP
     {
-        internal static readonly PluginConfig _config = PluginConfig.Instance;
+        private static readonly PluginConfig Config = PluginConfig.Instance;
         
         internal static void Prefix(TextMeshPro __instance)
         {
@@ -55,11 +58,11 @@ namespace FontChanger.HarmonyPatches
             int normalFlag = (int)FontStyles.Normal;
             int uppercaseFlag = (int)FontStyles.UpperCase;
             
-            __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(_config.FontName));
-            __instance.fontStyle = (FontStyles)((_config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
-            __instance.fontSize *= _config.FontSizeMultiplier;
-            __instance.characterSpacing = _config.CharSpacing;
-            __instance.wordSpacing = _config.WordSpacingAdjustment;
+            __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
+            __instance.fontStyle = (FontStyles)((Config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
+            __instance.fontSize *= Config.FontSizeMultiplier;
+            __instance.characterSpacing = Config.CharSpacing;
+            __instance.wordSpacing = Config.WordSpacingAdjustment;
         }
     }
 }

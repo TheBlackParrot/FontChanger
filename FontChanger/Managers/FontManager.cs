@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 using System.IO;
@@ -11,12 +12,12 @@ using UnityEngine.TextCore.LowLevel;
 
 namespace FontChanger.Managers
 {
-    class FontManager
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    internal class FontManager
     {
-        public static GameObject Prefab;
         private static TMP_FontAsset Font;
-        public static List<TMP_FontAsset> Fonts = new List<TMP_FontAsset>();
-        public static List<TMP_FontAsset> StandardFonts = new List<TMP_FontAsset>();
+        public static readonly List<TMP_FontAsset> Fonts = new List<TMP_FontAsset>();
+        public static readonly List<TMP_FontAsset> StandardFonts = new List<TMP_FontAsset>();
         private static Material _cachedCurvedMaterial;
         private static Material _cachedStandardMaterial;
 

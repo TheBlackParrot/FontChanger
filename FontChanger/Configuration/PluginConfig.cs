@@ -1,10 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 
 namespace FontChanger.Configuration
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
