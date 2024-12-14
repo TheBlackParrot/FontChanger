@@ -6,7 +6,6 @@ using HarmonyLib;
 using IPA.Config.Stores;
 using IPALogger = IPA.Logging.Logger;
 using Config = IPA.Config.Config;
-// ReSharper disable AsyncVoidMethod
 
 namespace FontChanger
 {
@@ -26,12 +25,9 @@ namespace FontChanger
         }
         
         [OnStart]
-        public async void OnApplicationStart()
+        public void OnApplicationStart()
         {
             MainMenuAwaiter.MainMenuInitializing += DoPatching;
-            
-            await MainMenuAwaiter.WaitForMainMenuAsync();
-            DoPatching();
         }
 
         private static void DoPatching()
