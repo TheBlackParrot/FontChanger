@@ -3,7 +3,7 @@ This Beat Saber mod changes any uses of the Teko font in TextMeshPro and CurvedT
 
 This is still a heavy WIP, but the core stuff works (yippee)!
 
-![screenshot.png](stuff/screenshot.png)
+![stuff/screenshot.png](stuff/screenshot.png)
 
 ## Configuration
 In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `FontChanger/Fonts` folder, then modify the generated `FontChanger.json` file to your liking.
