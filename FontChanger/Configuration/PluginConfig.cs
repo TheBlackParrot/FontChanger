@@ -34,6 +34,7 @@ namespace FontChanger.Configuration
         {
             Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().Do(component =>
             {
+                component.havePropertiesChanged = true;
                 component.SetAllDirty();
                 component.ForceMeshUpdate();
             });
