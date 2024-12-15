@@ -3,7 +3,7 @@
   "id": "FontChanger",
   "name": "FontChanger",
   "author": "TheBlackParrot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Change the font of anything using Teko to something else",
   "gameVersion": "1.39.1",
   "dependsOn": {
