@@ -11,6 +11,7 @@ In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `
 {
   "FontName": "Freeman",
   "FontItalic": true,
+  "FontUppercase": true,
   "FontSizeMultiplier": 0.77,
   "CharSpacing": -1.5,
   "WordSpacingAdjustment": 2.5
@@ -21,6 +22,9 @@ In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `
 
 `boolean` **FontItalic**
 > `true` to allow already italicized text elements to remain italicized, `false` to forcibly remove italics from everything.
+
+`boolean` **FontUppercase**
+> `true` to allow already capitalized text elements to remain capitalized, `false` to show text as its cased.
 
 `float` **FontSizeMultiplier**
 > Scales the font size against the set default of the text element. `1.0` to use the default font size.

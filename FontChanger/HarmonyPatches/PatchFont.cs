@@ -76,12 +76,12 @@ namespace FontChanger.HarmonyPatches
 
             bool previouslyUppercase = __instance.fontStyle.HasFlag(FontStyles.UpperCase);
             bool previouslyItalic = __instance.fontStyle.HasFlag(FontStyles.Italic);
-            int italicFlag = (int)FontStyles.Italic;
-            int normalFlag = (int)FontStyles.Normal;
-            int uppercaseFlag = (int)FontStyles.UpperCase;
+
+            int styleFlag = (Config.FontItalic && previouslyItalic ? (int)FontStyles.Italic : (int)FontStyles.Normal);
+            int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
             
             __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
-            __instance.fontStyle = (FontStyles)((Config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
+            __instance.fontStyle = (FontStyles)(styleFlag | caseFlag);
             __instance.fontSize *= Config.FontSizeMultiplier;
             __instance.fontSizeMin *= Config.FontSizeMultiplier;
             __instance.fontSizeMax *= Config.FontSizeMultiplier;
