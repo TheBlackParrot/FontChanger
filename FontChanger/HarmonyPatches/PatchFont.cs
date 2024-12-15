@@ -14,7 +14,7 @@ namespace FontChanger.HarmonyPatches
     {
         private static readonly PluginConfig Config = PluginConfig.Instance;
         
-        internal static void Prefix(CurvedTextMeshPro __instance)
+        internal static void Postfix(CurvedTextMeshPro __instance)
         {
             if (!__instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
             {
@@ -32,6 +32,8 @@ namespace FontChanger.HarmonyPatches
             __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
             __instance.fontStyle = (FontStyles)((Config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
             __instance.fontSize *= Config.FontSizeMultiplier;
+            __instance.fontSizeMin *= Config.FontSizeMultiplier;
+            __instance.fontSizeMax *= Config.FontSizeMultiplier;
             __instance.characterSpacing = Config.CharSpacing;
             __instance.wordSpacing = Config.WordSpacingAdjustment;
         }
@@ -43,7 +45,7 @@ namespace FontChanger.HarmonyPatches
     {
         private static readonly PluginConfig Config = PluginConfig.Instance;
         
-        internal static void Prefix(TextMeshPro __instance)
+        internal static void Postfix(TextMeshPro __instance)
         {
             if (!__instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
             {
@@ -61,6 +63,8 @@ namespace FontChanger.HarmonyPatches
             __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
             __instance.fontStyle = (FontStyles)((Config.FontItalic && previouslyItalic ? italicFlag : normalFlag) | (previouslyUppercase ? uppercaseFlag : 0));
             __instance.fontSize *= Config.FontSizeMultiplier;
+            __instance.fontSizeMin *= Config.FontSizeMultiplier;
+            __instance.fontSizeMax *= Config.FontSizeMultiplier;
             __instance.characterSpacing = Config.CharSpacing;
             __instance.wordSpacing = Config.WordSpacingAdjustment;
         }
