@@ -125,4 +125,7 @@
         <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')"/>
         <None Include="FontChanger.csproj.user" Condition="Exists('FontChanger.csproj.user')"/>
     </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="UI/BSML/Settings.bsml"/>
+    </ItemGroup>
 </Project>

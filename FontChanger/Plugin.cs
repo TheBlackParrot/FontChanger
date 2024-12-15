@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMarkupLanguage.Util;
 using IPA;
 using FontChanger.Configuration;
@@ -14,6 +15,7 @@ namespace FontChanger
     {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
+        internal static PluginConfig Config { get; private set; }
         private static Harmony harmony;
         
         [Init]
@@ -21,7 +23,7 @@ namespace FontChanger
             Instance = this;
             Log = logger;
             
-            PluginConfig.Instance = conf.Generated<PluginConfig>();
+            PluginConfig.Instance = Config = conf.Generated<PluginConfig>();
         }
         
         [OnStart]
@@ -35,7 +37,9 @@ namespace FontChanger
             Managers.FontManager.FirstTimeFontLoad();
             
             harmony = new Harmony("TheBlackParrot.FontChanger");
-            harmony.PatchAll(Assembly.GetExecutingAssembly()); 
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            
+            BSMLSettings.Instance.AddSettingsMenu("FontChanger", "FontChanger.UI.BSML.Settings.bsml", Config);
         }
 
         [OnExit]

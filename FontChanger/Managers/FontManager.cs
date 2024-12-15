@@ -50,6 +50,8 @@ namespace FontChanger.Managers
         
         public static void FirstTimeFontLoad()
         {
+            Plugin.Config.FontChoices.Clear();
+            
             _cachedCurvedMaterial = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(mat => mat.name.Contains("Teko-Medium SDF Curved"));
             _cachedStandardMaterial = Resources.FindObjectsOfTypeAll<Material>().FirstOrDefault(mat =>
                 mat.name.Contains("Teko-Medium SDF") && !mat.name.Contains("Curved"));
@@ -63,6 +65,8 @@ namespace FontChanger.Managers
                     
                     Fonts.Add(LoadFromTTF(file));
                     StandardFonts.Add(LoadFromTTF(file, false));
+                    
+                    Plugin.Config.FontChoices.Add(Path.GetFileNameWithoutExtension(file));
                 }
             }
 
