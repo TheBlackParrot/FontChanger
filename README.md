@@ -14,7 +14,8 @@ In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `
   "FontUppercase": true,
   "FontSizeMultiplier": 0.77,
   "CharSpacing": -1.5,
-  "WordSpacingAdjustment": 2.5
+  "WordSpacingAdjustment": 2.5,
+  "LineSpacingMultiplier": 1.33
 }
 ```
 `string` **FontName**
@@ -34,6 +35,9 @@ In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `
 
 `float` **WordSpacingAdjustment**
 > Increases or reduces the amount of padding between words. Positive values increase it, negative values decrease it.
+
+`float` **LineSpacingMultiplier**
+> Scales the line spacing/line height against the set default of the text element. `1.0` to use the default line spacing value.
 
 ## Known Issues
 Some `CurvedTextMeshPro` elements have nested components, which seems to... prevent? the font size scaling? from working? idk. I'll figure this out eventually.
