@@ -12,7 +12,6 @@ namespace FontChanger.HarmonyPatches
         private static readonly PluginConfig Config = PluginConfig.Instance;
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
         {
-            Plugin.Log.Info(instance.font.name);
             if (!instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
             {
                 return;
