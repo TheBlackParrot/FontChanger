@@ -89,4 +89,35 @@ namespace FontChanger.HarmonyPatches
             __instance.wordSpacing = Config.WordSpacingAdjustment;
         }
     }
+    
+    [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    internal class FontPatchTMP
+    {
+        private static readonly PluginConfig Config = PluginConfig.Instance;
+        
+        internal static void Postfix(TextMeshPro __instance)
+        {
+            if (!__instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
+            {
+                return;
+            }
+            
+            List<TMP_FontAsset> fontAssets = Managers.FontManager.StandardFonts;
+
+            bool previouslyUppercase = __instance.fontStyle.HasFlag(FontStyles.UpperCase);
+            bool previouslyItalic = __instance.fontStyle.HasFlag(FontStyles.Italic);
+
+            int styleFlag = (Config.FontItalic && previouslyItalic ? (int)FontStyles.Italic : (int)FontStyles.Normal);
+            int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
+            
+            __instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
+            __instance.fontStyle = (FontStyles)(styleFlag | caseFlag);
+            __instance.fontSize *= Config.FontSizeMultiplier;
+            __instance.fontSizeMin *= Config.FontSizeMultiplier;
+            __instance.fontSizeMax *= Config.FontSizeMultiplier;
+            __instance.characterSpacing = Config.CharSpacing;
+            __instance.wordSpacing = Config.WordSpacingAdjustment;
+        }
+    }
 }
