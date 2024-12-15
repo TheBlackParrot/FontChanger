@@ -16,7 +16,7 @@ namespace FontChanger.HarmonyPatches
         
         internal static void Prefix(CurvedTextMeshPro __instance)
         {
-            if (!__instance.font.name.Contains("Teko-Medium"))
+            if (!__instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
             {
                 return;
             }
@@ -45,7 +45,7 @@ namespace FontChanger.HarmonyPatches
         
         internal static void Prefix(TextMeshPro __instance)
         {
-            if (!__instance.font.name.Contains("Teko-Medium"))
+            if (!__instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
             {
                 return;
             }

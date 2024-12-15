@@ -11,6 +11,7 @@ namespace FontChanger.Configuration
     {
         public static PluginConfig Instance { get; set; }
         
+        public virtual bool Enabled { get; set; } = true;
         public virtual string FontName { get; set; } = "Freeman";
         public virtual bool FontItalic { get; set; } = true;
         public virtual float FontSizeMultiplier { get; set; } = 0.77f;
