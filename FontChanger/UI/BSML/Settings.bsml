@@ -8,6 +8,8 @@
     
     <slider-setting apply-on-change="true" value="FontSizeMultiplier" text="Font Size Scaling"
                     min="0.25" max="2" increment="0.01" show-buttons="true" formatter="PercentageFormatter"/>
+    <slider-setting apply-on-change="true" value="LineSpacingMultiplier" text="Line Height Scaling"
+                    min="-3" max="3" increment="0.05" show-buttons="true" formatter="PercentageFormatter"/>
     <slider-setting apply-on-change="true" value="CharSpacing" text="Character Spacing"
                     min="-5" max="5" increment="0.05" show-buttons="true"/>
     <slider-setting apply-on-change="true" value="WordSpacingAdjustment" text="Word Spacing"

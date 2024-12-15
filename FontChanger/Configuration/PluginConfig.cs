@@ -24,6 +24,7 @@ namespace FontChanger.Configuration
         public virtual float FontSizeMultiplier { get; set; } = 0.77f;
         public virtual float CharSpacing { get; set; } = -1.5f;
         public virtual float WordSpacingAdjustment { get; set; } = 2.5f;
+        public virtual float LineSpacingMultiplier { get; set; } = 1.33f;
         
         [UIValue("font-choices")]
         internal List<object> FontChoices = new List<object>();

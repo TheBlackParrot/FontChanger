@@ -24,12 +24,21 @@ namespace FontChanger.HarmonyPatches
             int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
             
             instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
-            instance.fontStyle = (FontStyles)(styleFlag | caseFlag);
+            instance.fontStyle &= (FontStyles)(styleFlag | caseFlag);
             instance.fontSize *= Config.FontSizeMultiplier;
             instance.fontSizeMin *= Config.FontSizeMultiplier;
             instance.fontSizeMax *= Config.FontSizeMultiplier;
             instance.characterSpacing = Config.CharSpacing;
             instance.wordSpacing = Config.WordSpacingAdjustment;
+
+            if (instance.lineSpacing < 0)
+            {
+                instance.lineSpacing += (instance.lineSpacing * Config.LineSpacingMultiplier * -1);
+            }
+            else
+            {
+                instance.lineSpacing *= Config.LineSpacingMultiplier;
+            }
         }
     }
     
