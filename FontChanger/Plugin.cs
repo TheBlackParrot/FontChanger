@@ -38,19 +38,24 @@ namespace FontChanger
             MainMenuAwaiter.MainMenuInitializing += DoPatching;
         }
 
+        [OnEnable]
+        public void OnEnable()
+        {
+            harmony = new Harmony("TheBlackParrot.FontChanger");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
         private static void DoPatching()
         {
             Managers.FontManager.FirstTimeFontLoad();
-            
-            harmony = new Harmony("TheBlackParrot.FontChanger");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-            
             BSMLSettings.Instance.AddSettingsMenu("FontChanger", "FontChanger.UI.BSML.Settings.bsml", Config);
         }
 
         [OnDisable]
         public void OnDisable()
         {
+            harmony.UnpatchSelf();
+            
             TMP_FontAsset TekoFont = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF");
             TMP_Text[] textObjs = Resources.FindObjectsOfTypeAll<TMP_Text>();
             
