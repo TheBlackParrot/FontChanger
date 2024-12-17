@@ -100,11 +100,7 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizes.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0)
             {
-                if (Mathf.Approximately(value, scaledSize.Value))
-                {
-                    value = scaledSize.Value;
-                }
-                else
+                if (!Mathf.Approximately(value, scaledSize.Value))
                 {
                     value *= Config.FontSizeMultiplier;
                 }
@@ -120,11 +116,7 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMins.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
             {
-                if (Mathf.Approximately(value, scaledSize.Value))
-                {
-                    value = scaledSize.Value;
-                }
-                else
+                if (!Mathf.Approximately(value, scaledSize.Value))
                 {
                     value *= Config.FontSizeMultiplier;
                 }
@@ -140,11 +132,7 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMaxs.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
             {
-                if (Mathf.Approximately(value, scaledSize.Value))
-                {
-                    value = scaledSize.Value;
-                }
-                else
+                if (!Mathf.Approximately(value, scaledSize.Value))
                 {
                     value *= Config.FontSizeMultiplier;
                 }
