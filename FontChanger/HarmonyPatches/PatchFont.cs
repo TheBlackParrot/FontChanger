@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using BeatSaberMarkupLanguage.Components;
 using FontChanger.Configuration;
 using HarmonyLib;
 using IPA.Utilities;
 using TMPro;
+using UnityEngine;
+
 // ReSharper disable InconsistentNaming
 
 namespace FontChanger.HarmonyPatches
@@ -87,6 +90,8 @@ namespace FontChanger.HarmonyPatches
     [HarmonyPatch]
     internal class FontSizePatch
     {
+        private static readonly PluginConfig Config = PluginConfig.Instance;
+        
         [HarmonyPatch(typeof(TMP_Text), "fontSize", MethodType.Setter)]
         [HarmonyPrefix]
         internal static bool setFontSize(TMP_Text __instance, ref float value)
@@ -95,7 +100,14 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizes.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0)
             {
-                value = scaledSize.Value;
+                if (Mathf.Approximately(value, scaledSize.Value))
+                {
+                    value = scaledSize.Value;
+                }
+                else
+                {
+                    value *= Config.FontSizeMultiplier;
+                }
             }
             return true;
         }
@@ -108,7 +120,14 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMins.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
             {
-                value = scaledSize.Value;
+                if (Mathf.Approximately(value, scaledSize.Value))
+                {
+                    value = scaledSize.Value;
+                }
+                else
+                {
+                    value *= Config.FontSizeMultiplier;
+                }
             }
             return true;
         }
@@ -121,7 +140,14 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMaxs.Find(x => x.Key == instanceID);
             if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
             {
-                value = scaledSize.Value;
+                if (Mathf.Approximately(value, scaledSize.Value))
+                {
+                    value = scaledSize.Value;
+                }
+                else
+                {
+                    value *= Config.FontSizeMultiplier;
+                }
             }
             return true;
         }
