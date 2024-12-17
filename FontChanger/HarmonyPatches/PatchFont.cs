@@ -18,6 +18,7 @@ namespace FontChanger.HarmonyPatches
         internal static readonly List<KeyValuePair<int, float>> ScaledFontSizes = new List<KeyValuePair<int, float>>();
         internal static readonly List<KeyValuePair<int, float>> ScaledFontSizeMins = new List<KeyValuePair<int, float>>();
         internal static readonly List<KeyValuePair<int, float>> ScaledFontSizeMaxs = new List<KeyValuePair<int, float>>();
+        
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
         {
             if (!Config.Enabled)
@@ -32,6 +33,7 @@ namespace FontChanger.HarmonyPatches
 
             if (scaledSize.Key != 0 && scaledSize.Value != 0)
             {
+                // should be 0 when patching the first time, so these won't set
                 instance.fontSizeMin = scaledSizeMin.Value;
                 instance.fontSizeMax = scaledSizeMax.Value;
                 instance.fontSize = scaledSize.Value;
@@ -39,11 +41,13 @@ namespace FontChanger.HarmonyPatches
 
             if (!instance.font.name.Contains("Teko-Medium"))
             {
+                // has been patched. stop here
                 return;
             }
             
-            if (scaledSize.Key == 0 && scaledSize.Value != 0)
+            if (scaledSize.Key == 0 && scaledSize.Value == 0)
             {
+                // ok now set the values, since we haven't done that yet
                 scaledSize = new KeyValuePair<int, float>(instanceID, instance.fontSize * Config.FontSizeMultiplier);
                 ScaledFontSizes.Add(scaledSize);
 
@@ -128,7 +132,13 @@ namespace FontChanger.HarmonyPatches
     {
         internal static void Finalizer(TextMeshPro __instance)
         {
-            PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizes.Find(x => x.Key == instanceID);
+
+            if (scaledSize.Key == 0 && scaledSize.Value == 0)
+            {
+                PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
+            }
         }
     }
     
@@ -137,7 +147,13 @@ namespace FontChanger.HarmonyPatches
     {
         internal static void Finalizer(TextMeshProUGUI __instance)
         {
-            PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizes.Find(x => x.Key == instanceID);
+
+            if (scaledSize.Key == 0 && scaledSize.Value == 0)
+            {
+                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+            }
         }
     }
 }
