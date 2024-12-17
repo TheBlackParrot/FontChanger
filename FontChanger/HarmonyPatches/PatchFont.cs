@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using FontChanger.Configuration;
 using HarmonyLib;
+using IPA.Utilities;
 using TMPro;
 // ReSharper disable InconsistentNaming
 
@@ -10,11 +15,47 @@ namespace FontChanger.HarmonyPatches
     internal abstract class PatcherFunctions
     {
         private static readonly PluginConfig Config = PluginConfig.Instance;
+        internal static readonly List<KeyValuePair<int, float>> ScaledFontSizes = new List<KeyValuePair<int, float>>();
+        internal static readonly List<KeyValuePair<int, float>> ScaledFontSizeMins = new List<KeyValuePair<int, float>>();
+        internal static readonly List<KeyValuePair<int, float>> ScaledFontSizeMaxs = new List<KeyValuePair<int, float>>();
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
         {
-            if (!instance.font.name.Contains("Teko-Medium") || !Config.Enabled)
+            if (!Config.Enabled)
             {
                 return;
+            }
+            
+            int instanceID = instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = ScaledFontSizes.Find(x => x.Key == instanceID);
+            KeyValuePair<int, float> scaledSizeMin = ScaledFontSizeMins.Find(x => x.Key == instanceID);
+            KeyValuePair<int, float> scaledSizeMax = ScaledFontSizeMaxs.Find(x => x.Key == instanceID);
+
+            if (scaledSize.Key != 0 && scaledSize.Value != 0)
+            {
+                instance.fontSizeMin = scaledSizeMin.Value;
+                instance.fontSizeMax = scaledSizeMax.Value;
+                instance.fontSize = scaledSize.Value;
+            }
+
+            if (!instance.font.name.Contains("Teko-Medium"))
+            {
+                return;
+            }
+            
+            if (scaledSize.Key == 0 && scaledSize.Value != 0)
+            {
+                scaledSize = new KeyValuePair<int, float>(instanceID, instance.fontSize * Config.FontSizeMultiplier);
+                ScaledFontSizes.Add(scaledSize);
+
+                scaledSizeMin = new KeyValuePair<int, float>(instanceID, instance.fontSizeMin * Config.FontSizeMultiplier);
+                ScaledFontSizeMins.Add(scaledSizeMin);
+
+                scaledSizeMax = new KeyValuePair<int, float>(instanceID, instance.fontSizeMax * Config.FontSizeMultiplier);
+                ScaledFontSizeMaxs.Add(scaledSizeMax);
+                
+                instance.fontSizeMin = scaledSizeMin.Value;
+                instance.fontSizeMax = scaledSizeMax.Value;
+                instance.fontSize = scaledSize.Value;
             }
 
             bool previouslyUppercase = instance.fontStyle.HasFlag(FontStyles.UpperCase);
@@ -25,9 +66,6 @@ namespace FontChanger.HarmonyPatches
             
             instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
             instance.fontStyle &= (FontStyles)(styleFlag | caseFlag);
-            instance.fontSize *= Config.FontSizeMultiplier;
-            instance.fontSizeMin *= Config.FontSizeMultiplier;
-            instance.fontSizeMax *= Config.FontSizeMultiplier;
             instance.characterSpacing = Config.CharSpacing;
             instance.wordSpacing = Config.WordSpacingAdjustment;
 
@@ -41,6 +79,49 @@ namespace FontChanger.HarmonyPatches
             }
         }
     }
+
+    [HarmonyPatch]
+    internal class FontSizePatch
+    {
+        [HarmonyPatch(typeof(TMP_Text), "fontSize", MethodType.Setter)]
+        [HarmonyPrefix]
+        internal static bool setFontSize(TMP_Text __instance, ref float value)
+        {
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizes.Find(x => x.Key == instanceID);
+            if (scaledSize.Key != 0 && scaledSize.Value != 0)
+            {
+                value = scaledSize.Value;
+            }
+            return true;
+        }
+        
+        [HarmonyPatch(typeof(TMP_Text), "fontSizeMin", MethodType.Setter)]
+        [HarmonyPrefix]
+        internal static bool setFontSizeMin(TMP_Text __instance, ref float value)
+        {
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMins.Find(x => x.Key == instanceID);
+            if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
+            {
+                value = scaledSize.Value;
+            }
+            return true;
+        }
+        
+        [HarmonyPatch(typeof(TMP_Text), "fontSizeMax", MethodType.Setter)]
+        [HarmonyPrefix]
+        internal static bool setFontSizeMax(TMP_Text __instance, ref float value)
+        {
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> scaledSize = PatcherFunctions.ScaledFontSizeMaxs.Find(x => x.Key == instanceID);
+            if (scaledSize.Key != 0 && scaledSize.Value != 0 && __instance.autoSizeTextContainer)
+            {
+                value = scaledSize.Value;
+            }
+            return true;
+        }
+    }
     
     [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
     internal class FontPatch
@@ -50,7 +131,7 @@ namespace FontChanger.HarmonyPatches
             PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
         }
     }
-
+    
     [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
     internal class FontPatchUGUI
     {
