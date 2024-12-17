@@ -30,15 +30,5 @@ namespace FontChanger.Configuration
         internal List<object> FontChoices = new List<object>();
         
         public virtual void OnReload() { }
-
-        public virtual void Changed()
-        {
-            Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().Do(component =>
-            {
-                component.havePropertiesChanged = true;
-                component.SetAllDirty();
-                component.ForceMeshUpdate();
-            });
-        }
     }
 }

@@ -23,8 +23,10 @@ namespace FontChanger.Managers
 
         private static TMP_FontAsset LoadFromTTF(string path, bool curved = true)
         {
-            var fnt = new Font(path);
-            var settings = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF").creationSettings;
+            // ReSharper disable once PossibleNullReferenceException
+            // this will never be null, shush
+            FontAssetCreationSettings settings = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF").creationSettings;
+            Font fnt = new Font(path);
             Enum.TryParse(settings.renderMode.ToString(), out GlyphRenderMode renderMode);
             
             Font = TMP_FontAsset.CreateFontAsset(fnt, (int)Math.Round(settings.pointSize/1.5), settings.padding, renderMode, settings.atlasWidth, settings.atlasHeight);
