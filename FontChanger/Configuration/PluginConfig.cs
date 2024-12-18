@@ -18,13 +18,13 @@ namespace FontChanger.Configuration
         public string PercentageFormatter(float x) => x.ToString("0%");
         
         public virtual bool Enabled { get; set; } = true;
-        public virtual string FontName { get; set; } = "Freeman";
+        public virtual string FontName { get; set; } = "SairaSemiCondensed-SemiBold";
         public virtual bool FontItalic { get; set; } = true;
         public virtual bool FontUppercase { get; set; } = true;
-        public virtual float FontSizeMultiplier { get; set; } = 0.77f;
-        public virtual float CharSpacing { get; set; } = -1.5f;
-        public virtual float WordSpacingAdjustment { get; set; } = 2.5f;
-        public virtual float LineSpacingMultiplier { get; set; } = 1.33f;
+        public virtual float FontSizeMultiplier { get; set; } = 0.85f;
+        public virtual float CharSpacing { get; set; } = -1.7f;
+        public virtual float WordSpacingAdjustment { get; set; } = 4.0f;
+        public virtual float LineSpacingMultiplier { get; set; } = 1.0f;
         
         [UIValue("font-choices")]
         internal List<object> FontChoices = new List<object>();

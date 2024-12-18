@@ -9,13 +9,14 @@ This is still a heavy WIP, but the core stuff works (yippee)!
 In your `Beat Saber/UserData` folder, drag any TrueType (`.ttf`) font into the `FontChanger/Fonts` folder, then modify the generated `FontChanger.json` file to your liking.
 ```json
 {
-  "FontName": "Freeman",
+  "Enabled": true,
+  "FontName": "SairaSemiCondensed-SemiBold",
   "FontItalic": true,
   "FontUppercase": true,
-  "FontSizeMultiplier": 0.77,
-  "CharSpacing": -1.5,
-  "WordSpacingAdjustment": 2.5,
-  "LineSpacingMultiplier": 1.33
+  "FontSizeMultiplier": 0.85,
+  "CharSpacing": -1.7,
+  "WordSpacingAdjustment": 4.0,
+  "LineSpacingMultiplier": 1.0
 }
 ```
 `string` **FontName**
