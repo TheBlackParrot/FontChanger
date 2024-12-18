@@ -21,10 +21,12 @@ namespace FontChanger.HarmonyPatches
         internal static readonly List<KeyValuePair<int, float>> OriginalFontSizes = new List<KeyValuePair<int, float>>();
         internal static readonly List<KeyValuePair<int, float>> OriginalFontSizeMins = new List<KeyValuePair<int, float>>();
         internal static readonly List<KeyValuePair<int, float>> OriginalFontSizeMaxs = new List<KeyValuePair<int, float>>();
+        internal static readonly List<KeyValuePair<int, FontStyles>> OriginalFontStyles = new List<KeyValuePair<int, FontStyles>>();
+        internal static readonly List<KeyValuePair<int, float>> OriginalLineSpacings = new List<KeyValuePair<int, float>>();
         
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
         {
-            if (!Config.Enabled)
+            if (!Config.Enabled || !instance.font.name.Contains("Teko-Medium"))
             {
                 return;
             }
@@ -33,6 +35,8 @@ namespace FontChanger.HarmonyPatches
             KeyValuePair<int, float> originalSize = OriginalFontSizes.Find(x => x.Key == instanceID);
             KeyValuePair<int, float> originalSizeMin = OriginalFontSizeMins.Find(x => x.Key == instanceID);
             KeyValuePair<int, float> originalSizeMax = OriginalFontSizeMaxs.Find(x => x.Key == instanceID);
+            KeyValuePair<int, FontStyles> originalStyle = OriginalFontStyles.Find(x => x.Key == instanceID);
+            KeyValuePair<int, float> originalLineSpacing = OriginalLineSpacings.Find(x => x.Key == instanceID);
 
             if (originalSize.Key == 0 && originalSize.Value == 0)
             {
@@ -44,36 +48,36 @@ namespace FontChanger.HarmonyPatches
 
                 originalSizeMax = new KeyValuePair<int, float>(instanceID, instance.fontSizeMax);
                 OriginalFontSizeMaxs.Add(originalSizeMax);
-            }
-
-            if (!instance.font.name.Contains("Teko-Medium"))
-            {
-                // has been patched. stop here
-                return;
+                
+                originalStyle = new KeyValuePair<int, FontStyles>(instanceID, instance.fontStyle);
+                OriginalFontStyles.Add(originalStyle);
+                
+                originalLineSpacing = new KeyValuePair<int, float>(instanceID, instance.lineSpacing);
+                OriginalLineSpacings.Add(originalLineSpacing);
             }
             
             instance.fontSizeMin = originalSizeMin.Value * Config.FontSizeMultiplier;
             instance.fontSizeMax = originalSizeMax.Value * Config.FontSizeMultiplier;
             instance.fontSize = originalSize.Value * Config.FontSizeMultiplier;
 
-            bool previouslyUppercase = instance.fontStyle.HasFlag(FontStyles.UpperCase);
-            bool previouslyItalic = instance.fontStyle.HasFlag(FontStyles.Italic);
+            bool previouslyUppercase = originalStyle.Value.HasFlag(FontStyles.UpperCase);
+            bool previouslyItalic = originalStyle.Value.HasFlag(FontStyles.Italic);
 
             int styleFlag = (Config.FontItalic && previouslyItalic ? (int)FontStyles.Italic : (int)FontStyles.Normal);
             int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
             
             instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
-            instance.fontStyle &= (FontStyles)(styleFlag | caseFlag);
+            instance.fontStyle = originalStyle.Value & (FontStyles)(styleFlag | caseFlag);
             instance.characterSpacing = Config.CharSpacing;
             instance.wordSpacing = Config.WordSpacingAdjustment;
 
             if (instance.lineSpacing < 0)
             {
-                instance.lineSpacing += (instance.lineSpacing * Config.LineSpacingMultiplier * -1);
+                instance.lineSpacing = (originalLineSpacing.Value * Config.LineSpacingMultiplier * -1);
             }
             else
             {
-                instance.lineSpacing *= Config.LineSpacingMultiplier;
+                instance.lineSpacing = originalLineSpacing.Value * Config.LineSpacingMultiplier;
             }
         }
     }
@@ -132,6 +136,22 @@ namespace FontChanger.HarmonyPatches
         }
     }
     
+    [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
+    internal class FontPatchUGUI
+    {
+        internal static void Finalizer(TextMeshProUGUI __instance)
+        {
+            int instanceID = __instance.GetInstanceID();
+            KeyValuePair<int, float> originalSize = PatcherFunctions.OriginalFontSizes.Find(x => x.Key == instanceID);
+
+            if ((originalSize.Key == 0 && originalSize.Value == 0) || !__instance.material.name.Contains("Curved"))
+            {
+                // for some reason that last part of the conditional fixes tooltips. idk either
+                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+            }
+        }
+    }
+    
     [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
     internal class FontPatch
     {
@@ -143,21 +163,6 @@ namespace FontChanger.HarmonyPatches
             if (originalSize.Key == 0 && originalSize.Value == 0)
             {
                 PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
-            }
-        }
-    }
-    
-    [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
-    internal class FontPatchUGUI
-    {
-        internal static void Finalizer(TextMeshProUGUI __instance)
-        {
-            int instanceID = __instance.GetInstanceID();
-            KeyValuePair<int, float> originalSize = PatcherFunctions.OriginalFontSizes.Find(x => x.Key == instanceID);
-
-            if (originalSize.Key == 0 && originalSize.Value == 0)
-            {
-                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
             }
         }
     }

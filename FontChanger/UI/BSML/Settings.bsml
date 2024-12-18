@@ -3,7 +3,7 @@
                     hover-hint="Remember to drink water! Hydrate!"/>
     
     <dropdown-list-setting apply-on-change="true" value="FontName" text="Font" choices="font-choices"
-                    hover-hint="Font files (.ttf) in UserData/FontChanger/Fonts"/>
+                    hover-hint="Font files (.ttf, .otf) in UserData/FontChanger/Fonts"/>
 
     <toggle-setting apply-on-change="true" value="FontItalic" text="Allow Italic Styling"
                     hover-hint="Completely removes italics from all UI elements if disabled"/>
@@ -16,9 +16,9 @@
                     min="-3" max="3" increment="0.05" show-buttons="true" formatter="PercentageFormatter"
                     hover-hint="Spacing between lines in UI elements with multiple lines"/>
     <slider-setting apply-on-change="true" value="CharSpacing" text="Character Spacing"
-                    min="-5" max="5" increment="0.05" show-buttons="true"
+                    min="-10" max="10" increment="0.1" show-buttons="true"
                     hover-hint="How close/far apart individual characters are in UI elements"/>
     <slider-setting apply-on-change="true" value="WordSpacingAdjustment" text="Word Spacing"
-                    min="-10" max="10" increment="0.1" show-buttons="true"
+                    min="-50" max="50" increment="0.5" show-buttons="true"
                     hover-hint="How close/far apart words are in UI elements (how wide space characters are, essentially)"/>
 </settings-container>

@@ -69,9 +69,13 @@ namespace FontChanger
                         if (foundObj.font.name.Contains(Config.FontName))
                         {
                             foundObj.font = TekoFont;
-                            foundObj.fontSizeMin = PatcherFunctions.OriginalFontSizeMins.Where(minPair => minPair.Key == pair.Key).First().Value;
-                            foundObj.fontSizeMax = PatcherFunctions.OriginalFontSizeMaxs.Where(maxPair => maxPair.Key == pair.Key).First().Value;
+                            foundObj.fontSizeMin = PatcherFunctions.OriginalFontSizeMins.Where(origPair => origPair.Key == pair.Key).First().Value;
+                            foundObj.fontSizeMax = PatcherFunctions.OriginalFontSizeMaxs.Where(origPair => origPair.Key == pair.Key).First().Value;
                             foundObj.fontSize = pair.Value;
+                            foundObj.fontStyle = PatcherFunctions.OriginalFontStyles.Where(origPair => origPair.Key == pair.Key).First().Value;
+                            foundObj.lineSpacing = PatcherFunctions.OriginalLineSpacings.Where(origPair => origPair.Key == pair.Key).First().Value;
+                            foundObj.wordSpacing = 0;
+                            foundObj.characterSpacing = 0;
                         }
                     }
                 }
@@ -80,6 +84,8 @@ namespace FontChanger
             PatcherFunctions.OriginalFontSizes.Clear();
             PatcherFunctions.OriginalFontSizeMins.Clear();
             PatcherFunctions.OriginalFontSizeMaxs.Clear();
+            PatcherFunctions.OriginalFontStyles.Clear();
+            PatcherFunctions.OriginalLineSpacings.Clear();
         }
 
         [OnExit]
