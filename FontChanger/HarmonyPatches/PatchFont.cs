@@ -24,7 +24,7 @@ namespace FontChanger.HarmonyPatches
         
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
         {
-            if (!Config.Enabled || !instance.font.name.Contains("Teko-Medium"))
+            if (!Config.Enabled || !instance.font.name.Contains("Teko"))
             {
                 return;
             }
@@ -45,9 +45,14 @@ namespace FontChanger.HarmonyPatches
 
             int styleFlag = (Config.FontItalic && previouslyItalic ? (int)FontStyles.Italic : (int)FontStyles.Normal);
             int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
+            int boldFlag = 0;
+            if (instance.font.name.Contains("Bold"))
+            {
+                boldFlag = (int)FontStyles.Bold;
+            }
             
             instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
-            instance.fontStyle = values.FontStyle & (FontStyles)(styleFlag | caseFlag);
+            instance.fontStyle = values.FontStyle & (FontStyles)(styleFlag | caseFlag | boldFlag);
             instance.characterSpacing = Config.CharSpacing;
             instance.wordSpacing = Config.WordSpacingAdjustment;
             instance.lineSpacing = values.LineSpacing * Config.LineSpacingMultiplier;
