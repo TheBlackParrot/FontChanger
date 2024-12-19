@@ -87,8 +87,14 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null)
             {
-                if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier))
+                if (Mathf.Approximately(value, values.FontSize))
                 {
+                    value *= Config.FontSizeMultiplier;
+                }
+                else if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier))
+                {
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
+                    values.FontSize = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
@@ -103,8 +109,14 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null && __instance.autoSizeTextContainer)
             {
-                if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier))
+                if (Mathf.Approximately(value, values.FontSizeMin))
                 {
+                    value *= Config.FontSizeMultiplier;
+                }
+                else if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier))
+                {
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
+                    values.FontSizeMin = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
@@ -119,8 +131,14 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null && __instance.autoSizeTextContainer)
             {
-                if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier))
+                if (Mathf.Approximately(value, values.FontSizeMax))
                 {
+                    value *= Config.FontSizeMultiplier;
+                }
+                else if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier))
+                {
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
+                    values.FontSizeMax = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
@@ -134,16 +152,6 @@ namespace FontChanger.HarmonyPatches
         internal static void Finalizer(TextMeshProUGUI __instance)
         {
             PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
-            /*
-            int instanceID = __instance.GetInstanceID();
-            KeyValuePair<int, float> originalSize = PatcherFunctions.OriginalFontSizes.Find(x => x.Key == instanceID);
-
-            if ((originalSize.Key == 0 && originalSize.Value == 0) || !__instance.material.name.Contains("Curved"))
-            {
-                // for some reason that last part of the conditional fixes tooltips. idk either
-                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
-            }
-            */
         }
     }
     
@@ -153,15 +161,6 @@ namespace FontChanger.HarmonyPatches
         internal static void Finalizer(TextMeshPro __instance)
         {
             PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
-            /*
-            int instanceID = __instance.GetInstanceID();
-            KeyValuePair<int, float> originalSize = PatcherFunctions.OriginalFontSizes.Find(x => x.Key == instanceID);
-
-            if (originalSize.Key == 0 && originalSize.Value == 0)
-            {
-                PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
-            }
-            */
         }
     }
 }
