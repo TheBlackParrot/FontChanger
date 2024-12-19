@@ -50,15 +50,7 @@ namespace FontChanger.HarmonyPatches
             instance.fontStyle = values.FontStyle & (FontStyles)(styleFlag | caseFlag);
             instance.characterSpacing = Config.CharSpacing;
             instance.wordSpacing = Config.WordSpacingAdjustment;
-
-            if (instance.lineSpacing < 0)
-            {
-                instance.lineSpacing = (values.LineSpacing * Config.LineSpacingMultiplier * -1);
-            }
-            else
-            {
-                instance.lineSpacing = values.LineSpacing * Config.LineSpacingMultiplier;
-            }
+            instance.lineSpacing = values.LineSpacing * Config.LineSpacingMultiplier;
             
             instance.SetAllDirty();
         }
