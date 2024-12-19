@@ -97,11 +97,12 @@ namespace FontChanger.HarmonyPatches
                 }
                 else if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier) && value > 0)
                 {
-                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
+                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
                     values.FontSize = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
+            
             return true;
         }
         
@@ -112,7 +113,7 @@ namespace FontChanger.HarmonyPatches
         {
             OriginalValues values = GetValueList(__instance);
             
-            if (values != null && __instance.autoSizeTextContainer)
+            if (values != null)
             {
                 if (Mathf.Approximately(value, values.FontSizeMin))
                 {
@@ -120,11 +121,12 @@ namespace FontChanger.HarmonyPatches
                 }
                 else if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier) && value > 0)
                 {
-                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
+                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
                     values.FontSizeMin = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
+            
             return true;
         }
         
@@ -135,7 +137,7 @@ namespace FontChanger.HarmonyPatches
         {
             OriginalValues values = GetValueList(__instance);
             
-            if (values != null && __instance.autoSizeTextContainer)
+            if (values != null)
             {
                 if (Mathf.Approximately(value, values.FontSizeMax))
                 {
@@ -143,11 +145,12 @@ namespace FontChanger.HarmonyPatches
                 }
                 else if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier) && value > 0)
                 {
-                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
+                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
                     values.FontSizeMax = value;
                     value *= Config.FontSizeMultiplier;
                 }
             }
+            
             return true;
         }
     }
@@ -168,13 +171,13 @@ namespace FontChanger.HarmonyPatches
         
         internal static void Finalizer(TMP_Text __instance)
         {
-            //Plugin.Log.Info($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
             if (__instance.fontSize <= 0)
             {
                 return;
             }
             
             Type type = __instance.GetType();
+            
             if (CurvedTypes.Contains(type))
             {
                 PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
@@ -185,15 +188,14 @@ namespace FontChanger.HarmonyPatches
             }
             else
             {
-                Plugin.Log.Info($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
+                Plugin.Log.Debug($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
             }
         }
     }
-    
-    /*
+
     [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
     [HarmonyPriority(int.MinValue)]
-    internal class FontPatchUGUI
+    internal class FontPatchUGUIOnEnable
     {
         internal static void Finalizer(TextMeshProUGUI __instance)
         {
@@ -203,12 +205,11 @@ namespace FontChanger.HarmonyPatches
     
     [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
     [HarmonyPriority(int.MinValue)]
-    internal class FontPatch
+    internal class FontPatchOnEnable
     {
         internal static void Finalizer(TextMeshPro __instance)
         {
             PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
         }
     }
-    */
 }
