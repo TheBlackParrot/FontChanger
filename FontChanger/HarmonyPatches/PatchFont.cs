@@ -31,7 +31,7 @@ namespace FontChanger.HarmonyPatches
             int instanceID = instance.GetInstanceID();
             if (!valuesList.Exists(x => x.Key == instanceID))
             {
-                valuesList.Add(new KeyValuePair<int, OriginalValues>(instanceID, new OriginalValues(instanceID, instance.fontSize, instance.fontSizeMin, instance.fontSizeMax, instance.fontStyle, instance.lineSpacing)));
+                valuesList.Add(new KeyValuePair<int, OriginalValues>(instanceID, new OriginalValues(instance)));
             }
             OriginalValues values = valuesList.Find(x => x.Key == instanceID).Value;
             
@@ -65,13 +65,25 @@ namespace FontChanger.HarmonyPatches
     internal class FontSizePatch
     {
         private static readonly PluginConfig Config = PluginConfig.Instance;
+
+        private static OriginalValues GetValueList(TMP_Text instance)
+        {
+            int instanceID = instance.GetInstanceID();
+            KeyValuePair<int, OriginalValues> list = PatcherFunctions.valuesList.Find(x => x.Key == instanceID);
+            if (list.Key != 0)
+            {
+                list = new KeyValuePair<int, OriginalValues>(instanceID, new OriginalValues(instance));
+                PatcherFunctions.valuesList.Add(list);
+            }
+
+            return list.Value;
+        }
         
         [HarmonyPatch(typeof(TMP_Text), "fontSize", MethodType.Setter)]
         [HarmonyPrefix]
         internal static bool setFontSize(TMP_Text __instance, ref float value)
         {
-            int instanceID = __instance.GetInstanceID();
-            OriginalValues values = PatcherFunctions.valuesList.Find(x => x.Key == instanceID).Value;
+            OriginalValues values = GetValueList(__instance);
             
             if (values != null)
             {
@@ -87,8 +99,7 @@ namespace FontChanger.HarmonyPatches
         [HarmonyPrefix]
         internal static bool setFontSizeMin(TMP_Text __instance, ref float value)
         {
-            int instanceID = __instance.GetInstanceID();
-            OriginalValues values = PatcherFunctions.valuesList.Find(x => x.Key == instanceID).Value;
+            OriginalValues values = GetValueList(__instance);
             
             if (values != null && __instance.autoSizeTextContainer)
             {
@@ -104,8 +115,7 @@ namespace FontChanger.HarmonyPatches
         [HarmonyPrefix]
         internal static bool setFontSizeMax(TMP_Text __instance, ref float value)
         {
-            int instanceID = __instance.GetInstanceID();
-            OriginalValues values = PatcherFunctions.valuesList.Find(x => x.Key == instanceID).Value;
+            OriginalValues values = GetValueList(__instance);
             
             if (values != null && __instance.autoSizeTextContainer)
             {

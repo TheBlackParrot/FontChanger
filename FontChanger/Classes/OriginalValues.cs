@@ -11,14 +11,14 @@ namespace FontChanger.Classes
         internal readonly FontStyles FontStyle;
         internal readonly float LineSpacing;
 
-        public OriginalValues(int instanceID, float size, float min, float max, FontStyles style, float lineSpacing)
+        public OriginalValues(TMP_Text instance)
         {
-            InstanceID = instanceID;
-            FontSize = size;
-            FontSizeMin = min;
-            FontSizeMax = max;
-            FontStyle = style;
-            LineSpacing = lineSpacing;
+            InstanceID = instance.GetInstanceID();
+            FontSize = instance.fontSize;
+            FontSizeMin = instance.fontSizeMin;
+            FontSizeMax = instance.fontSizeMax;
+            FontStyle = instance.fontStyle;
+            LineSpacing = instance.lineSpacing;
         }
     }
 }
