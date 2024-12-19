@@ -59,7 +59,7 @@ namespace FontChanger
             TMP_FontAsset TekoFont = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF");
             TMP_Text[] textObjs = Resources.FindObjectsOfTypeAll<TMP_Text>();
             
-            PatcherFunctions.OriginalFontSizes.ForEach(pair =>
+            PatcherFunctions.valuesList.ForEach(pair =>
             {
                 if (Resources.InstanceIDIsValid(pair.Key))
                 {
@@ -69,11 +69,11 @@ namespace FontChanger
                         if (foundObj.font.name.Contains(Config.FontName))
                         {
                             foundObj.font = TekoFont;
-                            foundObj.fontSizeMin = PatcherFunctions.OriginalFontSizeMins.Where(origPair => origPair.Key == pair.Key).First().Value;
-                            foundObj.fontSizeMax = PatcherFunctions.OriginalFontSizeMaxs.Where(origPair => origPair.Key == pair.Key).First().Value;
-                            foundObj.fontSize = pair.Value;
-                            foundObj.fontStyle = PatcherFunctions.OriginalFontStyles.Where(origPair => origPair.Key == pair.Key).First().Value;
-                            foundObj.lineSpacing = PatcherFunctions.OriginalLineSpacings.Where(origPair => origPair.Key == pair.Key).First().Value;
+                            foundObj.fontSizeMin = pair.Value.FontSizeMin;
+                            foundObj.fontSizeMax = pair.Value.FontSizeMax;
+                            foundObj.fontSize = pair.Value.FontSize;
+                            foundObj.fontStyle = pair.Value.FontStyle;
+                            foundObj.lineSpacing = pair.Value.LineSpacing;
                             foundObj.wordSpacing = 0;
                             foundObj.characterSpacing = 0;
                         }
@@ -81,11 +81,7 @@ namespace FontChanger
                 }
             });
             
-            PatcherFunctions.OriginalFontSizes.Clear();
-            PatcherFunctions.OriginalFontSizeMins.Clear();
-            PatcherFunctions.OriginalFontSizeMaxs.Clear();
-            PatcherFunctions.OriginalFontStyles.Clear();
-            PatcherFunctions.OriginalLineSpacings.Clear();
+            PatcherFunctions.valuesList.Clear();
         }
 
         [OnExit]
