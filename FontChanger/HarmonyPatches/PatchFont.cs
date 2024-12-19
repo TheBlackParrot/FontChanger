@@ -80,6 +80,7 @@ namespace FontChanger.HarmonyPatches
         }
         
         [HarmonyPatch(typeof(TMP_Text), "fontSize", MethodType.Setter)]
+        [HarmonyPriority(int.MinValue)]
         [HarmonyPrefix]
         internal static bool setFontSize(TMP_Text __instance, ref float value)
         {
@@ -102,6 +103,7 @@ namespace FontChanger.HarmonyPatches
         }
         
         [HarmonyPatch(typeof(TMP_Text), "fontSizeMin", MethodType.Setter)]
+        [HarmonyPriority(int.MinValue)]
         [HarmonyPrefix]
         internal static bool setFontSizeMin(TMP_Text __instance, ref float value)
         {
@@ -124,6 +126,7 @@ namespace FontChanger.HarmonyPatches
         }
         
         [HarmonyPatch(typeof(TMP_Text), "fontSizeMax", MethodType.Setter)]
+        [HarmonyPriority(int.MinValue)]
         [HarmonyPrefix]
         internal static bool setFontSizeMax(TMP_Text __instance, ref float value)
         {
@@ -147,6 +150,7 @@ namespace FontChanger.HarmonyPatches
     }
     
     [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
+    [HarmonyPriority(int.MinValue)]
     internal class FontPatchUGUI
     {
         internal static void Finalizer(TextMeshProUGUI __instance)
@@ -156,6 +160,7 @@ namespace FontChanger.HarmonyPatches
     }
     
     [HarmonyPatch(typeof(TextMeshPro), "OnEnable")]
+    [HarmonyPriority(int.MinValue)]
     internal class FontPatch
     {
         internal static void Finalizer(TextMeshPro __instance)
