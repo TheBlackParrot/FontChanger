@@ -8,6 +8,7 @@ using BeatSaberMarkupLanguage.Components;
 using FontChanger.Classes;
 using FontChanger.Configuration;
 using HarmonyLib;
+using HMUI;
 using IPA.Utilities;
 using TMPro;
 using UnityEngine;
@@ -58,6 +59,8 @@ namespace FontChanger.HarmonyPatches
             {
                 instance.lineSpacing = values.LineSpacing * Config.LineSpacingMultiplier;
             }
+            
+            instance.SetAllDirty();
         }
     }
 
@@ -92,7 +95,7 @@ namespace FontChanger.HarmonyPatches
                 {
                     value *= Config.FontSizeMultiplier;
                 }
-                else if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier))
+                else if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier) && value > 0)
                 {
                     Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
                     values.FontSize = value;
@@ -115,7 +118,7 @@ namespace FontChanger.HarmonyPatches
                 {
                     value *= Config.FontSizeMultiplier;
                 }
-                else if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier))
+                else if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier) && value > 0)
                 {
                     Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
                     values.FontSizeMin = value;
@@ -138,7 +141,7 @@ namespace FontChanger.HarmonyPatches
                 {
                     value *= Config.FontSizeMultiplier;
                 }
-                else if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier))
+                else if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier) && value > 0)
                 {
                     Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
                     values.FontSizeMax = value;
@@ -149,6 +152,45 @@ namespace FontChanger.HarmonyPatches
         }
     }
     
+    [HarmonyPatch(typeof(TMP_Text), "text", MethodType.Setter)]
+    [HarmonyPriority(int.MinValue)]
+    internal class FontPatch
+    {
+        private static readonly Type[] CurvedTypes = {
+            typeof(CurvedTextMeshPro),
+            typeof(FormattableText),
+            typeof(ClickableText)
+        };
+        private static readonly Type[] StandardTypes =
+        {
+            typeof(TextMeshPro)
+        };
+        
+        internal static void Finalizer(TMP_Text __instance)
+        {
+            //Plugin.Log.Info($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
+            if (__instance.fontSize <= 0)
+            {
+                return;
+            }
+            
+            Type type = __instance.GetType();
+            if (CurvedTypes.Contains(type))
+            {
+                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+            }
+            else if (StandardTypes.Contains(type))
+            {
+                PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
+            }
+            else
+            {
+                Plugin.Log.Info($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
+            }
+        }
+    }
+    
+    /*
     [HarmonyPatch(typeof(TextMeshProUGUI), "OnEnable")]
     [HarmonyPriority(int.MinValue)]
     internal class FontPatchUGUI
@@ -168,4 +210,5 @@ namespace FontChanger.HarmonyPatches
             PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
         }
     }
+    */
 }
