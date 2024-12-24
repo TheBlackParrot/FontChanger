@@ -111,13 +111,9 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null)
             {
-                if (Mathf.Approximately(value, values.FontSize))
+                if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier) && !Mathf.Approximately(value, values.FontSize) && value > 0)
                 {
-                    value *= Config.FontSizeMultiplier;
-                }
-                else if (!Mathf.Approximately(value, values.FontSize * Config.FontSizeMultiplier) && value > 0)
-                {
-                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a font size of {value}");
                     values.FontSize = value;
                     value *= Config.FontSizeMultiplier;
                 }
@@ -135,13 +131,9 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null)
             {
-                if (Mathf.Approximately(value, values.FontSizeMin))
+                if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier) && !Mathf.Approximately(value, values.FontSizeMin) && value > 0)
                 {
-                    value *= Config.FontSizeMultiplier;
-                }
-                else if (!Mathf.Approximately(value, values.FontSizeMin * Config.FontSizeMultiplier) && value > 0)
-                {
-                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a minimum font size of {value}");
                     values.FontSizeMin = value;
                     value *= Config.FontSizeMultiplier;
                 }
@@ -159,13 +151,9 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null)
             {
-                if (Mathf.Approximately(value, values.FontSizeMax))
+                if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier) && !Mathf.Approximately(value, values.FontSizeMax) && value > 0)
                 {
-                    value *= Config.FontSizeMultiplier;
-                }
-                else if (!Mathf.Approximately(value, values.FontSizeMax * Config.FontSizeMultiplier) && value > 0)
-                {
-                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
                     values.FontSizeMax = value;
                     value *= Config.FontSizeMultiplier;
                 }
@@ -207,13 +195,9 @@ namespace FontChanger.HarmonyPatches
             
             if (values != null)
             {
-                if (Mathf.Approximately(value, values.LineSpacing))
+                if (!Mathf.Approximately(value, values.LineSpacing * Config.LineSpacingMultiplier) && !Mathf.Approximately(value, values.LineSpacing))
                 {
-                    value *= Config.LineSpacingMultiplier;
-                }
-                else if (!Mathf.Approximately(value, values.LineSpacing * Config.LineSpacingMultiplier))
-                {
-                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a line spacing value of {value}");
+                    Plugin.Log.Info($"{__instance.name} ({values.InstanceID}) now wants a line spacing value of {value}");
                     values.LineSpacing = value;
                     value *= Config.LineSpacingMultiplier;
                 }
@@ -222,12 +206,13 @@ namespace FontChanger.HarmonyPatches
             return true;
         }
     }
-    
+
     [HarmonyPatch(typeof(TMP_Text), "text", MethodType.Setter)]
     [HarmonyPriority(int.MinValue)]
     internal class FontPatch
     {
-        private static readonly Type[] CurvedTypes = {
+        private static readonly Type[] CurvedTypes =
+        {
             typeof(CurvedTextMeshPro),
             typeof(FormattableText),
             typeof(ClickableText)
@@ -236,10 +221,15 @@ namespace FontChanger.HarmonyPatches
         {
             typeof(TextMeshPro)
         };
+        private static readonly PluginConfig Config = PluginConfig.Instance;
         
         internal static void Finalizer(TMP_Text __instance)
         {
-            if (__instance.fontSize <= 0)
+            if (!Config.Enabled || __instance == null)
+            {
+                return;
+            }
+            if (__instance.fontSize <= 0 || !__instance.isActiveAndEnabled)
             {
                 return;
             }

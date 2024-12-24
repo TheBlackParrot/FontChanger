@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Tags;
 using BeatSaberMarkupLanguage.Tags.Settings;
 using BeatSaberMarkupLanguage.TypeHandlers;
+using BeatSaberMarkupLanguage.ViewControllers;
 using FontChanger.Configuration;
 using HarmonyLib;
+using HMUI;
 using TMPro;
 using UnityEngine;
 
@@ -13,19 +16,29 @@ using UnityEngine;
 
 namespace FontChanger.HarmonyPatches
 {
-    internal class BSMLPatches
+    internal abstract class BSMLPatches
     {
+        private static readonly Type[] CurvedTypes = {
+            typeof(CurvedTextMeshPro),
+            typeof(FormattableText),
+            typeof(ClickableText)
+        };
+        private static readonly Type[] StandardTypes =
+        {
+            typeof(TextMeshPro)
+        };
+
         [HarmonyPatch]
         internal class TextTagPatch
         {
-            [HarmonyPatch(typeof(TextTag), "CreateObject")]
+            /*[HarmonyPatch(typeof(TextTag), "CreateObject")]
             [HarmonyPriority(int.MinValue)]
             [HarmonyFinalizer]
             internal static void Patch(ref GameObject __result)
             {
                 PatcherFunctions.Patch(__result.GetComponent<FormattableText>(), Managers.FontManager.Fonts);
             }
-            
+
             [HarmonyPatch(typeof(ClickableTextTag), "CreateObject")]
             [HarmonyPatch(typeof(SubmenuTag), "CreateObject")]
             [HarmonyPriority(int.MinValue)]
@@ -33,7 +46,7 @@ namespace FontChanger.HarmonyPatches
             internal static void ClickablePatch(ref GameObject __result)
             {
                 PatcherFunctions.Patch(__result.GetComponent<ClickableText>(), Managers.FontManager.Fonts);
-            }
+            }*/
 
             [HarmonyPatch(typeof(FormattableText), MethodType.Constructor)]
             [HarmonyPriority(int.MinValue)]
@@ -42,8 +55,7 @@ namespace FontChanger.HarmonyPatches
             {
                 __instance.Destroyed += (sender, args) => { PatcherFunctions.Unpatch(__instance); };
             }
-            
-            
+
             [HarmonyPatch(typeof(FormattableText), "RefreshText")]
             [HarmonyPriority(int.MinValue)]
             [HarmonyFinalizer]
@@ -51,25 +63,35 @@ namespace FontChanger.HarmonyPatches
             {
                 PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts, true);
             }
-
-            /*
-            // this crashes
-            [HarmonyPatch(typeof(TextMeshProUGUIHandler), "Setters", MethodType.Constructor)]
+        }
+        
+        [HarmonyPatch]
+        internal class ViewControllerPatch
+        {
+            [HarmonyPatch(typeof(BSMLViewController), "ParseWithFallback")]
             [HarmonyPriority(int.MinValue)]
-            [HarmonyAfter("com.monkeymanboy.BeatSaberMarkupLanguage")]
-            [HarmonyPostfix]
-            internal static void PatchValue(Dictionary<string, Action<TextMeshProUGUI, string>> __instance)
+            [HarmonyFinalizer]
+            internal static void Patch(BSMLViewController __instance)
             {
-                Plugin.Log.Info(__instance.Count.ToString());
-                
-                foreach (KeyValuePair<string,Action<TextMeshProUGUI,string>> keyValuePair in __instance)
+                var components = __instance.GetComponentsInChildren<TMP_Text>();
+                foreach (var component in components)
                 {
-                    Plugin.Log.Info($"{keyValuePair.Key}");
+                    Type type = component.GetType();
+            
+                    if (CurvedTypes.Contains(type))
+                    {
+                        PatcherFunctions.Patch(component, Managers.FontManager.Fonts);
+                    }
+                    else if (StandardTypes.Contains(type))
+                    {
+                        PatcherFunctions.Patch(component, Managers.FontManager.StandardFonts);
+                    }
+                    else
+                    {
+                        Plugin.Log.Debug($"{component.gameObject.name} ({component.GetInstanceID()}) -- {component.GetType()}");
+                    }
                 }
-
-                Plugin.Log.Info("triggered");
             }
-            */
         }
     }
 }

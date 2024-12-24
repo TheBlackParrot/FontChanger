@@ -2,14 +2,14 @@
 
 namespace FontChanger.Classes
 {
-    public class OriginalValues
+    internal class OriginalValues
     {
-        internal readonly int InstanceID;
-        internal float FontSize;
-        internal float FontSizeMin;
-        internal float FontSizeMax;
-        internal FontStyles FontStyle;
-        internal float LineSpacing;
+        public int InstanceID { get; }
+        public float FontSize { get; set; }
+        public float FontSizeMin { get; set; }
+        public float FontSizeMax { get; set; }
+        public FontStyles FontStyle { get; set; }
+        public float LineSpacing { get; set; }
 
         public OriginalValues(TMP_Text instance)
         {
