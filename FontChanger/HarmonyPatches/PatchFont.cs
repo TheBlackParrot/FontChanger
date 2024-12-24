@@ -168,11 +168,7 @@ namespace FontChanger.HarmonyPatches
                 
                 FontStyles style = value & (FontStyles)(styleFlag | caseFlag);
                 
-                if (value != values.FontStyle)
-                {
-                    values.FontStyle = style;
-                }
-                
+                values.FontStyle = value;
                 value = style;
             }
 
