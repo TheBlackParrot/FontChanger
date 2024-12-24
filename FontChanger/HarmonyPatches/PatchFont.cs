@@ -22,9 +22,14 @@ namespace FontChanger.HarmonyPatches
         private static readonly PluginConfig Config = PluginConfig.Instance;
         internal static readonly List<KeyValuePair<int, OriginalValues>> valuesList = new List<KeyValuePair<int, OriginalValues>>();
         
-        public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets)
+        public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets, bool force = false)
         {
-            if (!Config.Enabled || !instance.font.name.Contains("Teko"))
+            if (!Config.Enabled)
+            {
+                return;
+            }
+            
+            if (!instance.font.name.Contains("Teko") && !force)
             {
                 return;
             }
@@ -140,6 +145,58 @@ namespace FontChanger.HarmonyPatches
                     Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a maximum font size of {value}");
                     values.FontSizeMax = value;
                     value *= Config.FontSizeMultiplier;
+                }
+            }
+            
+            return true;
+        }
+
+        [HarmonyPatch(typeof(TMP_Text), "fontStyle", MethodType.Setter)]
+        [HarmonyPriority(int.MinValue)]
+        [HarmonyPrefix]
+        internal static bool setFontStyle(TMP_Text __instance, ref FontStyles value)
+        {
+            OriginalValues values = GetValueList(__instance);
+
+            if (values != null)
+            {
+                bool previouslyUppercase = value.HasFlag(FontStyles.UpperCase);
+                bool previouslyItalic = value.HasFlag(FontStyles.Italic);
+
+                int styleFlag = (Config.FontItalic && previouslyItalic ? (int)FontStyles.Italic : (int)FontStyles.Normal);
+                int caseFlag = (Config.FontUppercase && previouslyUppercase ? (int)FontStyles.UpperCase : 0);
+                
+                FontStyles style = value & (FontStyles)(styleFlag | caseFlag);
+                
+                if (value != values.FontStyle)
+                {
+                    values.FontStyle = style;
+                }
+                
+                value = style;
+            }
+
+            return true;
+        }
+
+        [HarmonyPatch(typeof(TMP_Text), "lineSpacing", MethodType.Setter)]
+        [HarmonyPriority(int.MinValue)]
+        [HarmonyPrefix]
+        internal static bool setLineSpacing(TMP_Text __instance, ref float value)
+        {
+            OriginalValues values = GetValueList(__instance);
+            
+            if (values != null)
+            {
+                if (Mathf.Approximately(value, values.LineSpacing))
+                {
+                    value *= Config.LineSpacingMultiplier;
+                }
+                else if (!Mathf.Approximately(value, values.LineSpacing * Config.LineSpacingMultiplier))
+                {
+                    Plugin.Log.Debug($"{__instance.name} ({values.InstanceID}) now wants a line spacing value of {value}");
+                    values.LineSpacing = value;
+                    value *= Config.LineSpacingMultiplier;
                 }
             }
             

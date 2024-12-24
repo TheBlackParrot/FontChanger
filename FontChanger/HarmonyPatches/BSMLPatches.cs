@@ -18,8 +18,6 @@ namespace FontChanger.HarmonyPatches
         [HarmonyPatch]
         internal class TextTagPatch
         {
-            private static readonly PluginConfig Config = PluginConfig.Instance;
-
             [HarmonyPatch(typeof(TextTag), "CreateObject")]
             [HarmonyPriority(int.MinValue)]
             [HarmonyFinalizer]
@@ -36,14 +34,25 @@ namespace FontChanger.HarmonyPatches
             {
                 PatcherFunctions.Patch(__result.GetComponent<ClickableText>(), Managers.FontManager.Fonts);
             }
+            
+            [HarmonyPatch(typeof(FormattableText), "RefreshText")]
+            [HarmonyPriority(int.MinValue)]
+            [HarmonyFinalizer]
+            internal static void FormattableTextPatch(FormattableText __instance)
+            {
+                PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts, true);
+            }
 
+            /*
             // this crashes
             [HarmonyPatch(typeof(TextMeshProUGUIHandler), "Setters", MethodType.Constructor)]
             [HarmonyPriority(int.MinValue)]
             [HarmonyAfter("com.monkeymanboy.BeatSaberMarkupLanguage")]
-            [HarmonyFinalizer]
+            [HarmonyPostfix]
             internal static void PatchValue(Dictionary<string, Action<TextMeshProUGUI, string>> __instance)
             {
+                Plugin.Log.Info(__instance.Count.ToString());
+                
                 foreach (KeyValuePair<string,Action<TextMeshProUGUI,string>> keyValuePair in __instance)
                 {
                     Plugin.Log.Info($"{keyValuePair.Key}");
@@ -51,6 +60,7 @@ namespace FontChanger.HarmonyPatches
 
                 Plugin.Log.Info("triggered");
             }
+            */
         }
     }
 }
