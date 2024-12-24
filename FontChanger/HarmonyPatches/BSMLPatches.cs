@@ -34,6 +34,15 @@ namespace FontChanger.HarmonyPatches
             {
                 PatcherFunctions.Patch(__result.GetComponent<ClickableText>(), Managers.FontManager.Fonts);
             }
+
+            [HarmonyPatch(typeof(FormattableText), MethodType.Constructor)]
+            [HarmonyPriority(int.MinValue)]
+            [HarmonyFinalizer]
+            internal static void FormattableTextAddDestroyerEvent(FormattableText __instance)
+            {
+                __instance.Destroyed += (sender, args) => { PatcherFunctions.Unpatch(__instance); };
+            }
+            
             
             [HarmonyPatch(typeof(FormattableText), "RefreshText")]
             [HarmonyPriority(int.MinValue)]

@@ -21,6 +21,29 @@ namespace FontChanger.HarmonyPatches
     {
         private static readonly PluginConfig Config = PluginConfig.Instance;
         internal static readonly List<KeyValuePair<int, OriginalValues>> valuesList = new List<KeyValuePair<int, OriginalValues>>();
+        private static readonly TMP_FontAsset TekoFont = Resources.FindObjectsOfTypeAll<TMP_FontAsset>().LastOrDefault(f2 => f2.name == "Teko-Medium SDF");
+
+        public static void Unpatch(TMP_Text instance)
+        {
+            int instanceID = instance.GetInstanceID();
+            OriginalValues values = valuesList.Find(x => x.Key == instanceID).Value;
+            if (values == null)
+            {
+                return;
+            }
+            
+            if (instance.font.name.Contains(Config.FontName))
+            {
+                instance.font = TekoFont;
+                instance.fontSizeMin = values.FontSizeMin;
+                instance.fontSizeMax = values.FontSizeMax;
+                instance.fontSize = values.FontSize;
+                instance.fontStyle = values.FontStyle;
+                instance.lineSpacing = values.LineSpacing;
+                instance.wordSpacing = 0;
+                instance.characterSpacing = 0;
+            }
+        }
         
         public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets, bool force = false)
         {

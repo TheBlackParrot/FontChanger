@@ -66,17 +66,7 @@ namespace FontChanger
                     TMP_Text foundObj = textObjs.FirstOrDefault(obj => obj.GetInstanceID() == pair.Key);
                     if (foundObj != null)
                     {
-                        if (foundObj.font.name.Contains(Config.FontName))
-                        {
-                            foundObj.font = TekoFont;
-                            foundObj.fontSizeMin = pair.Value.FontSizeMin;
-                            foundObj.fontSizeMax = pair.Value.FontSizeMax;
-                            foundObj.fontSize = pair.Value.FontSize;
-                            foundObj.fontStyle = pair.Value.FontStyle;
-                            foundObj.lineSpacing = pair.Value.LineSpacing;
-                            foundObj.wordSpacing = 0;
-                            foundObj.characterSpacing = 0;
-                        }
+                        PatcherFunctions.Unpatch(foundObj);
                     }
                 }
             });
