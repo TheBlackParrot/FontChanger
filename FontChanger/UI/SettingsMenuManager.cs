@@ -16,7 +16,7 @@ internal class SettingsMenuManager : IInitializable, IDisposable
     {
         Managers.FontManager.FirstTimeFontLoad();
         
-#if V1_40_3
+#if V1_39_1
         BeatSaberMarkupLanguage.Settings.BSMLSettings.Instance.AddSettingsMenu("FontChanger", "FontChanger.UI.BSML.Settings.bsml", this);
 #else
         BeatSaberMarkupLanguage.Settings.BSMLSettings.instance?.AddSettingsMenu("FontChanger", "FontChanger.UI.BSML.Settings.bsml", this);
@@ -25,7 +25,7 @@ internal class SettingsMenuManager : IInitializable, IDisposable
 
     public void Dispose()
     {
-#if V1_40_3
+#if V1_39_1
         BeatSaberMarkupLanguage.Settings.BSMLSettings.Instance?.RemoveSettingsMenu(this);
 #else
         BeatSaberMarkupLanguage.Settings.BSMLSettings.instance?.RemoveSettingsMenu(this);

@@ -2,11 +2,18 @@
 <!-- This file contains project properties used by the build. -->
 <Project>
   <!-- Game version-dependent stuff -->
-  <PropertyGroup Condition="$(Configuration) == 'Release-1.40.3' Or $(Configuration) == 'Debug-1.40.3'">
-    <GameVersion>1.40.3</GameVersion>
+  <PropertyGroup Condition="$(Configuration) == 'Release-1.37.1' Or $(Configuration) == 'Debug-1.37.1'">
+    <GameVersion>1.37.1</GameVersion>
+
+    <BSIPAVersion>4.3.4</BSIPAVersion>
+    <BSMLVersion>1.11.4</BSMLVersion>
+    <SiraUtilVersion>3.1.11</SiraUtilVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration) == 'Release-1.39.1' Or $(Configuration) == 'Debug-1.39.1'">
+    <GameVersion>1.39.1</GameVersion>
 
     <BSIPAVersion>4.3.5</BSIPAVersion>
-    <BSMLVersion>1.12.5</BSMLVersion>
+    <BSMLVersion>1.12.4</BSMLVersion>
     <SiraUtilVersion>3.1.14</SiraUtilVersion>
   </PropertyGroup>
 
