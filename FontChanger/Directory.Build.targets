@@ -47,6 +47,11 @@
         <Copy SourceFiles="$(OutputAssemblyName).dll" DestinationFiles="$(ProjectDir)$(ArtifactDestination)\Plugins\$(AssemblyName).dll" />
         <Copy SourceFiles="$(OutputAssemblyName).pdb" DestinationFiles="$(ProjectDir)$(ArtifactDestination)\Plugins\$(AssemblyName).pdb" />
     </Target>
+    <Target Name="CopyFolderToArtifactDestination" AfterTargets="Build" DependsOnTargets="BSMT_AfterBuild;BSMT_SetOutputs">
+        <Message Text="Target: CopyFolderToArtifactDestination | ArtifactDestination: '$(ArtifactDestination)'" Importance="high" />
+        <Message Text="   Copying '%(OutputCopyFolder.Identity)' to '$(ArtifactDestination)\%(OutputCopyFolder.OutputPath)'." Importance="high" />
+        <Copy SourceFiles="%(OutputCopyFolder.Identity)" DestinationFolder="$(ArtifactDestination)\%(OutputCopyFolder.OutputPath)" />
+    </Target>
     <!--Creates a BeatMods compliant zip file with the release.-->
     <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(BSMTTaskAssembly)' != ''">
         <PropertyGroup>

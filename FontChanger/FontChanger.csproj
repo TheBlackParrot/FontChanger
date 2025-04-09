@@ -120,4 +120,13 @@
         <EmbeddedResource Include="UI/BSML/Settings.bsml"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="Resources\Fonts\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <OutputCopyFolder Include="Resources\Fonts\*">
+            <OutputPath>UserData\FontChanger\Fonts</OutputPath>
+        </OutputCopyFolder>
+    </ItemGroup>
+
 </Project>
