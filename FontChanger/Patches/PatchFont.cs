@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BeatSaberMarkupLanguage.Components;
 using FontChanger.Configuration;
+using FontChanger.Managers;
 using HarmonyLib;
 using HMUI;
 using TMPro;
@@ -36,6 +37,11 @@ internal abstract class PatcherFunctions
         {
             return;
         }
+
+        if (FontLists.Fonts.FindIndex(x => x.name == $"{Config.FontName}-Curved(Clone)") == -1)
+        {
+            return;
+        }
         
         instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
         instance.SetAllDirty();
@@ -47,17 +53,18 @@ internal abstract class PatcherFunctions
 internal class FontPatch
 {
     private static readonly Type[] CurvedTypes =
-    {
+    [
         typeof(CurvedTextMeshPro),
         typeof(FormattableText),
         typeof(ClickableText)
-    };
+    ];
     private static readonly Type[] StandardTypes =
-    {
+    [
         typeof(TextMeshPro)
-    };
+    ];
     private static PluginConfig Config => PluginConfig.Instance;
 
+    // ReSharper disable once InconsistentNaming
     internal static void Finalizer(TMP_Text __instance)
     {
         if (!Config.Enabled || __instance == null)
@@ -74,11 +81,11 @@ internal class FontPatch
             
         if (CurvedTypes.Contains(type))
         {
-            PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+            PatcherFunctions.Patch(__instance, FontManager.Fonts);
         }
         else if (StandardTypes.Contains(type))
         {
-            PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
+            PatcherFunctions.Patch(__instance, FontManager.StandardFonts);
         }
         else
         {
@@ -91,9 +98,10 @@ internal class FontPatch
 [HarmonyPriority(int.MinValue)]
 internal class FontPatchUGUIOnEnable
 {
+    // ReSharper disable once InconsistentNaming
     internal static void Finalizer(TextMeshProUGUI __instance)
     {
-        PatcherFunctions.Patch(__instance, Managers.FontManager.Fonts);
+        PatcherFunctions.Patch(__instance, FontManager.Fonts);
     }
 }
     
@@ -101,8 +109,9 @@ internal class FontPatchUGUIOnEnable
 [HarmonyPriority(int.MinValue)]
 internal class FontPatchOnEnable
 {
+    // ReSharper disable once InconsistentNaming
     internal static void Finalizer(TextMeshPro __instance)
     {
-        PatcherFunctions.Patch(__instance, Managers.FontManager.StandardFonts);
+        PatcherFunctions.Patch(__instance, FontManager.StandardFonts);
     }
 }
