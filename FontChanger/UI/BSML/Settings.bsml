@@ -1,0 +1,8 @@
+﻿<settings-container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                     xsi:noNamespaceSchemaLocation='https://monkeymanboy.github.io/BSML-Docs/BSMLSchema.xsd'>
+    <toggle-setting apply-on-change="true" value="Enabled" text="Mod Enabled"
+                    hover-hint="Remember to drink water! Hydrate!"/>
+
+    <dropdown-list-setting apply-on-change="true" value="FontName" text="Font" choices="font-choices"
+                           hover-hint="Font files (.ttf, .otf) in UserData/FontChanger/Fonts"/>
+</settings-container>
