@@ -3,6 +3,10 @@
     <toggle-setting apply-on-change="true" value="Enabled" text="Mod Enabled"
                     hover-hint="Remember to drink water! Hydrate!"/>
 
+    <horizontal><text text="-----" font-size="4" color="#00000000"/></horizontal>
+
+    <toggle-setting apply-on-change="true" value="ForceDisableItalic" text="Force Italics Off"
+                    hover-hint="Prevents fonts from being italicized"/>
     <dropdown-list-setting apply-on-change="true" value="FontName" text="Font" choices="font-choices"
                            hover-hint="Font files (.ttf, .otf) in UserData/FontChanger/Fonts"/>
 </settings-container>

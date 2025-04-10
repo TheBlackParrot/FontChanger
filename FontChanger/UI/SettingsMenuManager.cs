@@ -43,6 +43,12 @@ internal class SettingsMenuManager : IInitializable, IDisposable
         get => Config.FontName;
         set => Config.FontName = value;
     }
+
+    protected bool ForceDisableItalic
+    {
+        get => Config.ForceDisableItalic;
+        set => Config.ForceDisableItalic = value;
+    }
     
     [UIValue("font-choices")]
     internal static List<object> FontChoices = [];

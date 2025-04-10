@@ -44,6 +44,11 @@ internal abstract class PatcherFunctions
         }
         
         instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
+        if (Config.ForceDisableItalic)
+        {
+            instance.fontStyle = FontStyles.Normal;
+        }
+
         instance.SetAllDirty();
     }
 }
