@@ -22,7 +22,7 @@
     <PluginId>FontChanger</PluginId>
     <PluginName>FontChanger</PluginName>
     <Authors>TheBlackParrot</Authors>
-    <Version>0.0.0+$(GameVersion)</Version>
+    <Version>0.0.1+$(GameVersion)</Version>
     <Description>Changes UI fonts used throughout the game</Description>
     <ProjectHome>https://github.com/TheBlackParrot/FontChanger</ProjectHome>
     <ProjectSource>https://github.com/TheBlackParrot/FontChanger</ProjectSource>
