@@ -120,3 +120,53 @@ internal class FontPatchOnEnable
         PatcherFunctions.Patch(__instance, FontManager.StandardFonts);
     }
 }
+
+[HarmonyPatch]
+internal class FixItalicOffsets
+{
+    private static PluginConfig Config => PluginConfig.Instance;
+    
+    [HarmonyPatch(typeof(LevelListTableCell), "SetDataFromLevelAsync")]
+    [HarmonyPriority(int.MinValue)]
+    [HarmonyPostfix]
+    // ReSharper disable once InconsistentNaming
+    internal static void TableViewSetupFix(LevelListTableCell __instance)
+    {
+        if (!Config.ForceDisableItalic)
+        {
+            return;
+        }
+        
+        Transform songAuthor = __instance.transform.Find("SongAuthor");
+        RectTransform songAuthorRect = songAuthor.GetComponent<RectTransform>();
+        songAuthor.GetComponent<RectTransform>().offsetMin = songAuthorRect.offsetMin with { x = 9.7f };
+        
+        Transform songTime = __instance.transform.Find("SongTime");
+        RectTransform songTimeRect = songTime.GetComponent<RectTransform>();
+        songTime.GetComponent<RectTransform>().offsetMax = songTimeRect.offsetMax with { x = -2.33f };
+    }
+
+    [HarmonyPatch(typeof(LevelBar), "SetupData")]
+    [HarmonyPriority(int.MinValue)]
+    [HarmonyPostfix]
+    // ReSharper disable once InconsistentNaming
+    internal static void LevelBarSetupFix(LevelBar __instance)
+    {
+        if (!Config.ForceDisableItalic)
+        {
+            return;
+        }
+        
+        Transform songAuthor = __instance.transform.Find("SingleLineTextContainer").Find("AuthorNameText");
+        RectTransform songAuthorRectSingleLine = songAuthor.GetComponent<RectTransform>();
+        songAuthor.GetComponent<RectTransform>().offsetMin = songAuthorRectSingleLine.offsetMin with { x = 0.81f };
+        
+        Transform songAuthorMultipleLine = __instance.transform.Find("MultipleLineTextContainer").Find("AuthorNameText");
+        RectTransform songAuthorRectMultipleLine = songAuthorMultipleLine.GetComponent<RectTransform>();
+        songAuthorMultipleLine.GetComponent<RectTransform>().offsetMin = songAuthorRectMultipleLine.offsetMin with { x = 0.81f };
+        
+        Transform songTitleMultipleLine = __instance.transform.Find("MultipleLineTextContainer").Find("SongNameText");
+        CurvedTextMeshPro songTitleTMPComponent = songTitleMultipleLine.GetComponent<CurvedTextMeshPro>();
+        songTitleMultipleLine.GetComponent<CurvedTextMeshPro>().text = songTitleTMPComponent.text[1..];
+    }
+}
