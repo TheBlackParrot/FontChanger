@@ -54,6 +54,7 @@
         <Reference Include="HMUI">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
             <Private>false</Private>
+            <Publicize Condition="$(GameVersion) != '1.39.1'">true</Publicize>
         </Reference>
         <Reference Include="Interactable" Condition="$(GameVersion) == '1.39.1'">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Interactable.dll</HintPath>
