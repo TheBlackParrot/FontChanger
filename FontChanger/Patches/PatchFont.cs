@@ -129,7 +129,7 @@ internal class FixItalicOffsets
     // ReSharper disable once InconsistentNaming
     internal static void TableViewSetupFix(LevelListTableCell __instance)
     {
-        if (!Config.ForceDisableItalic)
+        if (!Config.Enabled || !Config.ForceDisableItalic || !Config.FixSomeUIThings)
         {
             return;
         }
@@ -159,7 +159,7 @@ internal class FixItalicOffsets
     // ReSharper disable once InconsistentNaming
     internal static void LevelBarSetupFix(LevelBar __instance)
     {
-        if (!Config.ForceDisableItalic)
+        if (!Config.Enabled || !Config.ForceDisableItalic || !Config.FixSomeUIThings)
         {
             return;
         }
@@ -188,6 +188,28 @@ internal class FixItalicOffsets
             if (songTitleMultipleLine.TryGetComponent(out CurvedTextMeshPro songTitleTMPComponent))
             {
                 songTitleTMPComponent.text = songTitleTMPComponent.text[1..];
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(SongProgressUIController), "Start")]
+    [HarmonyPriority(int.MinValue)]
+    [HarmonyPostfix]
+    // ReSharper disable once InconsistentNaming
+    internal static void SongProgressUIStartFix(SongProgressUIController __instance)
+    {
+        if (!Config.Enabled || !Config.ForceDisableItalic || !Config.FixSomeUIThings)
+        {
+            return;
+        }
+        
+        Transform? separator = __instance.transform.Find("ProgressText/Separator");
+        if (separator)
+        {
+            if (separator.TryGetComponent(out ImageView separatorImageView))
+            {
+                separatorImageView._skew = 0;
+                separatorImageView.SetAllDirty();
             }
         }
     }

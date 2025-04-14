@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using BeatSaberMarkupLanguage.Attributes;
 using FontChanger.Configuration;
 using JetBrains.Annotations;
@@ -8,9 +9,10 @@ using Zenject;
 namespace FontChanger.UI;
 
 [UsedImplicitly]
-internal class SettingsMenuManager : IInitializable, IDisposable
+internal class SettingsMenuManager : IInitializable, IDisposable, INotifyPropertyChanged
 {
     private static PluginConfig Config => PluginConfig.Instance;
+    public event PropertyChangedEventHandler? PropertyChanged;
     
     public void Initialize()
     {
@@ -47,14 +49,26 @@ internal class SettingsMenuManager : IInitializable, IDisposable
     protected bool ForceDisableItalic
     {
         get => Config.ForceDisableItalic;
-        set => Config.ForceDisableItalic = value;
+        set
+        {
+            Config.ForceDisableItalic = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ForceDisableItalic)));
+        }
     }
+
     protected bool ForceDisableCapitalize
     {
         get => Config.ForceDisableCapitalize;
         set => Config.ForceDisableCapitalize = value;
     }
+
+    protected bool FixSomeUIThings
+    {
+        get => Config.FixSomeUIThings;
+        set => Config.FixSomeUIThings = value;
+    }
     
     [UIValue("font-choices")]
-    internal static List<object> FontChoices = [];
+    // ReSharper disable once CollectionNeverQueried.Global
+    internal static readonly List<object> FontChoices = [];
 }
