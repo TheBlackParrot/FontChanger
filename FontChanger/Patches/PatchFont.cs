@@ -92,10 +92,12 @@ internal class FontPatch
         {
             PatcherFunctions.Patch(__instance, FontManager.StandardFonts);
         }
+#if DEBUG
         else
         {
             Plugin.Log.Debug($"{__instance.name} ({__instance.GetInstanceID()}) -- {__instance.GetType()}");
         }
+#endif
     }
 }
 
@@ -137,13 +139,23 @@ internal class FixItalicOffsets
             return;
         }
         
-        Transform songAuthor = __instance.transform.Find("SongAuthor");
-        RectTransform songAuthorRect = songAuthor.GetComponent<RectTransform>();
-        songAuthor.GetComponent<RectTransform>().offsetMin = songAuthorRect.offsetMin with { x = 9.7f };
-        
-        Transform songTime = __instance.transform.Find("SongTime");
-        RectTransform songTimeRect = songTime.GetComponent<RectTransform>();
-        songTime.GetComponent<RectTransform>().offsetMax = songTimeRect.offsetMax with { x = -2.33f };
+        Transform? songAuthor = __instance.transform.Find("SongAuthor");
+        if (songAuthor)
+        {
+            if (songAuthor.TryGetComponent(out RectTransform songAuthorRect))
+            {
+                songAuthorRect.offsetMin = songAuthorRect.offsetMin with { x = 9.7f };
+            }
+        }
+
+        Transform? songTime = __instance.transform.Find("SongTime");
+        if (songTime)
+        {
+            if (songTime.TryGetComponent(out RectTransform songTimeRect))
+            {
+                songTime.GetComponent<RectTransform>().offsetMax = songTimeRect.offsetMax with { x = -2.33f };
+            }
+        }
     }
 
     [HarmonyPatch(typeof(LevelBar), "SetupData")]
@@ -156,17 +168,32 @@ internal class FixItalicOffsets
         {
             return;
         }
-        
-        Transform songAuthor = __instance.transform.Find("SingleLineTextContainer").Find("AuthorNameText");
-        RectTransform songAuthorRectSingleLine = songAuthor.GetComponent<RectTransform>();
-        songAuthor.GetComponent<RectTransform>().offsetMin = songAuthorRectSingleLine.offsetMin with { x = 0.81f };
-        
-        Transform songAuthorMultipleLine = __instance.transform.Find("MultipleLineTextContainer").Find("AuthorNameText");
-        RectTransform songAuthorRectMultipleLine = songAuthorMultipleLine.GetComponent<RectTransform>();
-        songAuthorMultipleLine.GetComponent<RectTransform>().offsetMin = songAuthorRectMultipleLine.offsetMin with { x = 0.81f };
-        
-        Transform songTitleMultipleLine = __instance.transform.Find("MultipleLineTextContainer").Find("SongNameText");
-        CurvedTextMeshPro songTitleTMPComponent = songTitleMultipleLine.GetComponent<CurvedTextMeshPro>();
-        songTitleMultipleLine.GetComponent<CurvedTextMeshPro>().text = songTitleTMPComponent.text[1..];
+
+        Transform? songAuthor = __instance.transform.Find("SingleLineTextContainer/AuthorNameText");
+        if (songAuthor)
+        {
+            if (songAuthor.TryGetComponent(out RectTransform songAuthorRectSingleLine))
+            {
+                songAuthorRectSingleLine.offsetMin = songAuthorRectSingleLine.offsetMin with { x = 0.81f };
+            }
+        }
+
+        Transform? songAuthorMultipleLine = __instance.transform.Find("MultipleLineTextContainer/AuthorNameText");
+        if (songAuthorMultipleLine)
+        {
+            if (songAuthorMultipleLine.TryGetComponent(out RectTransform songAuthorRectMultipleLine))
+            {
+                songAuthorRectMultipleLine.offsetMin = songAuthorRectMultipleLine.offsetMin with { x = 0.81f };
+            }
+        }
+
+        Transform? songTitleMultipleLine = __instance.transform.Find("MultipleLineTextContainer/SongNameText");
+        if (songTitleMultipleLine)
+        {
+            if (songTitleMultipleLine.TryGetComponent(out CurvedTextMeshPro songTitleTMPComponent))
+            {
+                songTitleTMPComponent.text = songTitleTMPComponent.text[1..];
+            }
+        }
     }
 }
