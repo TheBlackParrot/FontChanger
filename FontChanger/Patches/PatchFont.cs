@@ -15,17 +15,6 @@ internal abstract class PatcherFunctions
 {
     private static PluginConfig Config => PluginConfig.Instance;
 
-    private static readonly TMP_FontAsset TekoFont = Resources.FindObjectsOfTypeAll<TMP_FontAsset>()
-        .LastOrDefault(f2 => f2.name == "Teko-Medium SDF")!;
-
-    public static void Unpatch(TMP_Text instance)
-    {
-        if (instance.font.name.Contains(Config.FontName))
-        {
-            instance.font = TekoFont;
-        }
-    }
-
     public static void Patch(TMP_Text instance, List<TMP_FontAsset> fontAssets, bool force = false)
     {
         if (!Config.Enabled)
@@ -44,9 +33,15 @@ internal abstract class PatcherFunctions
         }
         
         instance.font = fontAssets.FirstOrDefault(font => font.name.Contains(Config.FontName));
+        
         if (Config.ForceDisableItalic && (instance.fontStyle & FontStyles.Italic) == FontStyles.Italic)
         {
             instance.fontStyle ^= FontStyles.Italic;
+        }
+        
+        if (Config.ForceDisableCapitalize && (instance.fontStyle & FontStyles.UpperCase) == FontStyles.UpperCase)
+        {
+            instance.fontStyle ^= FontStyles.UpperCase;
         }
 
         instance.SetAllDirty();

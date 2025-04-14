@@ -7,6 +7,8 @@
 
     <toggle-setting apply-on-change="true" value="ForceDisableItalic" text="Force Italics Off"
                     hover-hint="Prevents fonts from being italicized"/>
+    <toggle-setting apply-on-change="true" value="ForceDisableCapitalize" text="Force Capitalization Off"
+                    hover-hint="Prevents text from being all uppercase"/>
     <dropdown-list-setting apply-on-change="true" value="FontName" text="Font" choices="font-choices"
                            hover-hint="Font files (.ttf, .otf) in UserData/FontChanger/Fonts"/>
 </settings-container>
